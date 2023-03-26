@@ -1,17 +1,39 @@
-* {
+@font-face {
+  font-family: "Barlow-Regular";
+  src: url("./fonts/Barlow/Barlow-Regular.ttf");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Barlow-Medium";
+  src: url("./fonts/Barlow/Barlow-Medium.ttf");
+  font-style: normal;
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Barlow-SemiBold";
+  src: url("./fonts/Barlow/Barlow-SemiBold.ttf");
+  font-style: normal;
+  font-weight: 600;
+}
+
+:root {
+  --text: #fff;
+}
+
+*,
+*::after,
+*::before {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-    background-color: #252836;
-}
-
-a {
-  text-decoration: none;
+  font-family: "Barlow-Regular", sans-serif;
+  font-size: 16px;
+  min-height: 100vh;
+  background-color: #252836;
 }
 
 ul,
@@ -19,5 +41,15 @@ ol,
 li {
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
