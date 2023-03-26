@@ -1,6 +1,6 @@
 <template>
-  <div class="settingsView">
-    <h2>Settings View</h2>
+  <div class="settings">
+    <h2 class="settings__title">Settings View</h2>
   </div>
 </template>
 
@@ -10,4 +10,16 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.settings {
+  padding-left: 110px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.settings__title {
+  color: #f3f3f3;
+  font-size: 60px;
+}
+</style>

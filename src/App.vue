@@ -7,7 +7,7 @@
 
 <script>
 import { RouterView } from "vue-router";
-import LeftSide from "@/views/left-side/LeftSide.vue";
+import LeftSide from "./components/LeftSide.vue";
 
 export default {
   name: "App",
