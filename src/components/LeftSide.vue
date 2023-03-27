@@ -1,60 +1,65 @@
 <template>
   <div class="left-side">
     <div class="left-side__links">
-
-      <RouterLink :to="{ name: 'home' }">
+      <RouterLink :to="{ name: 'home' }" class="left-side__link">
         <img src="@/assets/images/svg/logo.svg" alt="logo" />
       </RouterLink>
 
       <div class="left-side__links-list">
-
-        <RouterLink :to="{ name: 'home' }">
-          <img src="@/assets/images/svg/home.svg" alt="home" />
+        <RouterLink
+          v-for="item in menuLists"
+          :to="{ name: item.name }"
+          class="left-side__link"
+          :key="item.name"
+        >
+          <img :src="item.image" :alt="item.name" />
         </RouterLink>
-        <RouterLink :to="{ name: 'discount' }">
-          <img src="@/assets/images/svg/discount.svg" alt="discount" />
-        </RouterLink>
-        <RouterLink :to="{ name: 'dashboard' }">
-          <img src="@/assets/images/svg/dashboard.svg" alt="dashboard" />
-        </RouterLink>
-        <RouterLink :to="{ name: 'message' }">
-          <img src="@/assets/images/svg/message.svg" alt="message" />
-        </RouterLink>
-        <RouterLink :to="{ name: 'notification' }">
-          <img src="@/assets/images/svg/notification.svg" alt="notification" />
-        </RouterLink>
-        <RouterLink :to="{ name: 'settings' }">
-          <img src="@/assets/images/svg/settings.svg" alt="settings" />
-        </RouterLink>
-
       </div>
 
-      <RouterLink :to="{ name: 'exit' }">
+      <RouterLink :to="{ name: 'exit' }" class="left-side__link">
         <img src="@/assets/images/svg/exit.svg" alt="exit" />
       </RouterLink>
-      
     </div>
-    <!-- <RouterView /> -->
   </div>
 </template>
-<!-- ? v-for qilishim kerak edi -->
+
 <script>
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink } from "vue-router";
 export default {
   name: "LeftSide",
   data() {
     return {
-      /* menuLists: [
-        { image: "house.svg", link: "/" },
-        { image: "discount.svg", link: "/discount" },
-        { image: "dashboard.svg", link: "/dashboard" },
-        { image: "message.svg", link: "/message" },
-        { image: "notification.svg", link: "/notification" },
-        { image: "settings.svg", link: "/settings" },
-      ],  */
+      menuLists: [
+        {
+          image: new URL("@/assets/images/svg/home.svg", import.meta.url),
+          name: "home",
+        },
+        {
+          image: new URL("@/assets/images/svg/discount.svg", import.meta.url),
+          name: "discount",
+        },
+        {
+          image: new URL("@/assets/images/svg/dashboard.svg", import.meta.url),
+          name: "dashboard",
+        },
+        {
+          image: new URL("@/assets/images/svg/message.svg", import.meta.url),
+          name: "message",
+        },
+        {
+          image: new URL(
+            "@/assets/images/svg/notification.svg",
+            import.meta.url
+          ),
+          name: "notification",
+        },
+        {
+          image: new URL("@/assets/images/svg/settings.svg", import.meta.url),
+          name: "settings",
+        },
+      ],
     };
   },
-  methods: {},
 };
 </script>
 
@@ -62,11 +67,13 @@ export default {
 .left-side {
   max-width: 104px;
   padding: 24px;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   bottom: 0;
-  min-height: 100vh;
+  /* min-height: 100vh; */
+  /* height: 100%; */
+  overflow-y: auto;
   background-color: #1f1d2b;
 }
 .left-side__links {
@@ -77,10 +84,14 @@ export default {
   text-align: center;
 }
 .left-side__links-list {
-  height: 100%;
+  /* height: 100%; */
   margin: 1rem 0;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  /* row-gap: 2rem; */
+}
+.left-side__link {
+  margin: 1rem 0;
 }
 </style>

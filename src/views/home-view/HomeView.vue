@@ -71,16 +71,18 @@
       </div>
     </div>
 
-    <div class="right-content">right content</div>
+    <RightSide />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import RightSide from "@/views/home-view/components/right-side/RightSide.vue";
+import Payment from "@/views/home-view/components/payment/Payment.vue";
 
 export default {
   name: "HomeView",
-  components: {},
+  components: {RightSide,Payment},
   data() {
     return {
       inputWord: "",
@@ -209,5 +211,58 @@ export default {
   line-height: 130%;
   color: #fff;
   padding: 15px 14px;
+}
+
+.main-content__cards {
+  margin-top: 58px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+.main-content__card {
+  /* max-width: 192px; */
+  max-width: calc(100% / 3 - 28px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background: #1f1d2b;
+  border-radius: 16px;
+  text-align: center;
+  padding: 24px;
+  cursor: pointer;
+}
+.main-content__card-image {
+  margin: -36px auto 0;
+  max-width: 150px;
+  min-width: 75px;
+}
+.main-content__card-img {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  border-radius: 50%;
+}
+.main-content__card-title {
+  margin-top: 14px;
+  font-family: "Barlow-Medium";
+  font-size: 14px;
+  line-height: 130%;
+  text-align: center;
+  color: #fff;
+}
+.main-content__card-price {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 140%;
+  color: #fff;
+}
+.main-content__card-desc {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 140%;
+  color: #abbbc2;
+  /* opacity: 0.2; */
 }
 </style>
