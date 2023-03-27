@@ -18,20 +18,18 @@
         />
       </header>
 
-      <!-- ? hozircha index berilvotti balkim change bo'lar -->
       <ul class="main-content__tabs">
         <li
-          v-for="(item, index) in getMenuList"
+          v-for="(item, index) in tempMenuList"
           class="main-content__tab"
           :class="{ selected: item.selected }"
-          @click="selectedCategory(index)"
+          @click="selectCategory(item.category, index)"
           :key="item.category"
         >
           {{ item.name }}
         </li>
       </ul>
 
-      <!-- ?  -->
       <div class="main-content__dishes">
         <h2 class="main-content__dishes-title">Choose Dishes</h2>
         <select @change="selectedOption" class="main-content__dishes-select">
@@ -41,10 +39,9 @@
           </option>
         </select>
       </div>
-      <!-- ? -->
 
-      <div class="main-content__cards">
-        <template v-for="(item, index) in getFoodList">
+      <div v-if="tempFoodList" class="main-content__cards">
+        <template v-for="(item, index) in tempFoodList">
           <div
             class="main-content__card"
             v-if="item.isShown"
@@ -69,6 +66,11 @@
           </div>
         </template>
       </div>
+      <div v-else class="main-content__loading">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
     </div>
 
     <RightSide />
@@ -82,11 +84,14 @@ import Payment from "@/views/home-view/components/payment/Payment.vue";
 
 export default {
   name: "HomeView",
-  components: {RightSide,Payment},
+  components: { RightSide, Payment },
   data() {
     return {
       inputWord: "",
       currentTime: "",
+      tempMenuList: null,
+      tempOptionalMenu: null,
+      tempFoodList: null,
       days: [
         "Monday",
         "Tuesday",
@@ -112,17 +117,70 @@ export default {
       ],
     };
   },
+  mounted() {
+    this.tempFoodList = this.getFoodList.filter((item) => item.isShown);
+    this.tempMenuList = this.getMenuList.map((item) => item);
+  },
   created() {
     setInterval(this.getCurrentTime, 1000);
+  },
+  watch: {
+    inputWord(newItem) {
+      this.tempFoodList = this.getFoodList.filter((item) =>
+        item.title.toLowerCase().includes(newItem.toLowerCase())
+      );
+    },
   },
   methods: {
     getCurrentTime() {
       const today = new Date();
       return (this.currentTime = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`);
     },
-    /* getImg(path) {
-      return require(`@/assets/images/dishes/${path}`);
-    }, */
+    selectCategory(category, index) {
+      if (category == "all-dishes") {
+        this.tempMenuList = this.getMenuList.map((item) => {
+          item.selected = false;
+          return item;
+        });
+        // console.log("getMenuList=>", this.getMenuList);
+        this.tempMenuList[index].selected = true;
+        this.tempFoodList = this.getFoodList.map((item) => {
+          item.isShown = true;
+          return item;
+        });
+      } else {
+        this.tempMenuList = this.getMenuList.map((item) => {
+          item.selected = false;
+          return item;
+        });
+        this.tempMenuList[index].selected = true;
+        this.tempFoodList = this.getFoodList.map((item) => {
+          if (item.category == category) {
+            item.isShown = true;
+          } else {
+            item.isShown = false;
+          }
+          return item;
+        });
+      }
+    },
+    selectedOption(e) {
+      const optValue = e.target.value;
+      console.log("selectedOption => ", optValue);
+      if (optValue == "all") {
+        this.tempFoodList = this.getFoodList.map((item) => {
+          item.isShown = true;
+          return item;
+        });
+      } else {
+        this.tempFoodList = this.getFoodList.filter(
+          (item) => item.orderDish[optValue]
+        );
+      }
+    },
+    selectedCard(id, index) {
+      
+    }
   },
   computed: {
     /*  ...mapGetters(["getMenuList", "getOptionalMenu", "getFoodList"]), */
@@ -138,6 +196,9 @@ export default {
 <style>
 .home {
   padding: 24px 433px 24px 110px;
+}
+.main-content {
+  min-height: 100vh;
 }
 .main-content__header {
   display: flex;
@@ -264,5 +325,10 @@ export default {
   line-height: 140%;
   color: #abbbc2;
   /* opacity: 0.2; */
+}
+
+.main-content__loading {
+  color: #fff;
+  text-align: center;
 }
 </style>

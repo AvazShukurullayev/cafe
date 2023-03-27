@@ -1,4 +1,3 @@
-// ? State
 const state = {
   menuList: [
     { name: "All Dishes", selected: true, category: "all-dishes" },
@@ -18,7 +17,6 @@ const state = {
     {
       id: 1,
       img: new URL("@/assets/images/dishes/dish-1.png", import.meta.url),
-      //   img: "dish-1.png",
       title: "Spicy seasoned seafood noodles",
       price: 2.29,
       quantity: 5,
@@ -36,7 +34,6 @@ const state = {
     {
       id: 2,
       img: new URL("@/assets/images/dishes/dish-2.png", import.meta.url),
-      //   img: "dish-2.png",
       title: "Salted Pasta with mushroom sauce",
       price: 2.69,
       quantity: 23,
@@ -54,7 +51,6 @@ const state = {
     {
       id: 3,
       img: new URL("@/assets/images/dishes/dish-3.png", import.meta.url),
-      //   img: "dish-3.png",
       title: "Beef dumpling in hot and sour soup",
       price: 2.99,
       quantity: 11,
@@ -72,7 +68,6 @@ const state = {
     {
       id: 4,
       img: new URL("@/assets/images/dishes/dish-4.png", import.meta.url),
-      //   img: "dish-4.png",
       title: "Healthy noodle with spinach leaf",
       price: 3.29,
       quantity: 24,
@@ -90,7 +85,6 @@ const state = {
     {
       id: 5,
       img: new URL("@/assets/images/dishes/dish-5.png", import.meta.url),
-      //   img: "dish-5.png",
       title: "Hot spicy fried rice with omelet",
       price: 3.49,
       quantity: 19,
@@ -108,7 +102,6 @@ const state = {
     {
       id: 6,
       img: new URL("@/assets/images/dishes/dish-6.png", import.meta.url),
-    //   img: "dish-6.png",
       title: "Duck Five Ways, Berlu",
       price: 4.59,
       quantity: 11,
@@ -127,7 +120,6 @@ const state = {
   selectedDishesList: [],
 };
 
-// ? Getters
 const getters = {
   getMenuList: (state) => {
     return state.menuList;
@@ -140,13 +132,10 @@ const getters = {
   },
 };
 
-// ? Mutations
 const mutations = {};
 
-// ? Actions
 const actions = {};
 
-// ? Export
 export default {
   state,
   getters,
