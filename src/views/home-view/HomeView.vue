@@ -46,7 +46,7 @@
             class="main-content__card"
             v-if="item.isShown"
             :key="item.id"
-            @click="selectedCard(item.id, index)"
+            @click="selectedCard(item, index)"
           >
             <div class="main-content__card-image">
               <img
@@ -76,7 +76,7 @@
     <RightSide />
   </div>
 </template>
-
+<!-- ? selected card ni optimizatsiya qilish kerakmikan -->
 <script>
 import { mapGetters } from "vuex";
 import RightSide from "@/views/home-view/components/right-side/RightSide.vue";
@@ -178,9 +178,18 @@ export default {
         );
       }
     },
-    selectedCard(id, index) {
-      
-    }
+    selectedCard(item, index) {
+      let isThere = null;
+      this.getDishesArray.forEach((element) => {
+        if (element.id === item.id) isThere = true;
+      });
+
+      if (isThere) {
+        this.getDishesArray[index].counter++;
+      } else {
+        this.$store.commit("addDish", item);
+      }
+    },
   },
   computed: {
     /*  ...mapGetters(["getMenuList", "getOptionalMenu", "getFoodList"]), */
@@ -188,6 +197,7 @@ export default {
       getMenuList: "getMenuList",
       getOptionalMenu: "getOptionalMenu",
       getFoodList: "getFoodList",
+      getDishesArray: "getDishesArray",
     }),
   },
 };
@@ -332,3 +342,13 @@ export default {
   text-align: center;
 }
 </style>
+
+<!-- 
+  if (this.getDishesArray.length == 0) {
+        this.$store.commit("addDish", item);
+      } else if (isThere) {
+        this.getDishesArray[index].counter++;
+      } else {
+        this.$store.commit("addDish", item);
+      }
+ -->

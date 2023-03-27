@@ -26,14 +26,43 @@
         </div>
       </div>
     </div>
+
     <div class="right-side__meals">
-      <Meal
-        v-for="(item, index) in mealArray"
-        :item="item"
-        :index="index"
-        :mealArray="mealArray"
-        @removeMeal="$emit('removeItem', $event)"
-      />
+      <div class="meal" v-for="(item, index) in getDishesArray">
+        <div class="meal__left">
+          <div class="meal__left-top d-flex">
+            <div class="d-flex">
+              <img class="meal__left-img" :src="item.img" :alt="item.title" />
+              <div>
+                <p class="meal__left-text">{{ item.title }}</p>
+                <p class="meal__left-price">$ {{ item.price }}</p>
+              </div>
+            </div>
+            <input
+              type="number"
+              class="meal__left-counter"
+              min="1"
+              :max="item.maxLimit"
+              v-model="item.counter"
+            />
+            <!--? type="number" boganda e (eyler soni) ni togirlab qoyish kerak  -->
+          </div>
+          <div class="meal__left-bottom">
+            <input
+              class="meal__left-comment"
+              v-model="item.comment"
+              placeholder="Please, write comments"
+            />
+          </div>
+        </div>
+        <div class="meal__right">
+          <p class="meal__right-sum">$ 0</p>
+
+          <button class="basket" @click="removeDish(item.id)">
+            <img src="@/assets/images/basket/basket.svg" alt="basket" />
+          </button>
+        </div>
+      </div>
     </div>
     <div class="right-side__footer">
       <div>
@@ -52,7 +81,10 @@
         </div>
       </div>
       <div class="mt-2">
-        <button @click="$emit('moveToPayment')" class="btn btn-primary w-100 payment_btn">
+        <button
+          @click="$emit('moveToPayment')"
+          class="btn btn-primary w-100 payment__btn"
+        >
           Continue to Payment
         </button>
       </div>
@@ -61,16 +93,13 @@
 </template>
 
 <script>
-// import Meal from "./meal/Meal.vue";
-
 import { mapGetters } from "vuex";
 export default {
   name: "RightSide",
-  // props: ["mealArray"],
-  // components: { Meal },
+  props: {},
+  components: {},
   data() {
     return {
-      // orderNumber: 34562,
       mealSum: 100,
       service: 0,
       discount: 0,
@@ -83,9 +112,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getMealArray"]),
+    ...mapGetters({
+      getDishesArray: "getDishesArray",
+    }),
   },
   methods: {
+    removeDish(id) {
+      this.$store.commit("removeDish", id);
+    },
     total(par) {
       console.log("rightside => ", par);
     },
@@ -172,6 +206,87 @@ export default {
   scrollbar-width: thin;
   scrollbar-color: rgb(232, 14, 14);
 }
+
+.meal {
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  /* align-content: space-evenly; */
+  gap: 10px;
+}
+.meal__left {
+  max-width: 297px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.meal__left-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.meal__left-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  margin-right: 6px;
+}
+.meal__left-text {
+  font-family: "Barlow-Medium";
+  font-size: 14px;
+  line-height: 130%;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.meal__left-price {
+  font-family: "Barlow-Medium";
+  font-size: 12px;
+  line-height: 140%;
+  color: #abbbc2;
+}
+.meal__left-counter {
+  max-width: 52px;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: #2d303e;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  font-family: "Barlow-Medium";
+  line-height: 140%;
+  color: #fff;
+  outline: none;
+}
+.meal__left-comment {
+  width: 100%;
+  background: #2d303e;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 14px;
+  line-height: 140%;
+  color: #e0e6e9;
+  outline: none;
+}
+.meal__right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.meal__right-sum {
+  font-family: "Barlow-Medium";
+  line-height: 140%;
+  color: #fff;
+  padding-top: 14px;
+}
+
 .right-side__footer {
   border-top: 1px solid #393c49;
   padding-top: 24px;
@@ -191,5 +306,36 @@ export default {
   font-size: 16px;
   line-height: 140%;
   color: #ffffff;
+}
+
+.basket {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ea7c69;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.payment__btn {
+  width: 100%;
+  background: #ea7c69;
+  box-shadow: 0px 8px 24px rgba(234, 124, 105, 0.3);
+  border-radius: 8px;
+  padding: 14px;
+  border: none;
+  outline: none;
+  font-family: "Barlow-SemiBold";
+  font-size: 14px;
+  line-height: 140%;
+  color: #fafafa;
+  cursor: pointer;
+  transition: 0.3s all ease-in-out;
+}
+.payment__btn:hover {
+  background: #f37059;
 }
 </style>
