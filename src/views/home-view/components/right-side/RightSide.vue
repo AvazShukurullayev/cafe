@@ -56,7 +56,9 @@
           </div>
         </div>
         <div class="meal__right">
-          <p class="meal__right-sum">$ 0</p>
+          <p class="meal__right-sum">
+            $ {{ (item.sum = Number((item.price * item.counter).toFixed(2))) }}
+          </p>
 
           <button class="basket" @click="removeDish(item.id)">
             <img src="@/assets/images/basket/basket.svg" alt="basket" />
@@ -72,19 +74,12 @@
           <p class="right-side__footer-price">$ {{ discount }}</p>
         </div>
         <div class="right-side__footer-card d-flex">
-          <p class="right-side__footer-discount">Service</p>
-          <p class="right-side__footer-price">% {{ service }}</p>
-        </div>
-        <div class="right-side__footer-card d-flex">
           <p class="right-side__footer-discount">Sub total</p>
-          <p class="right-side__footer-price">$ {{ total() }}</p>
+          <p class="right-side__footer-price">$ {{ total }}</p>
         </div>
       </div>
       <div class="mt-2">
-        <button
-          @click="$emit('moveToPayment')"
-          class="btn btn-primary w-100 payment__btn"
-        >
+        <button @click="$emit('moveToPayment')" class="payment__btn">
           Continue to Payment
         </button>
       </div>
@@ -100,10 +95,9 @@ export default {
   components: {},
   data() {
     return {
-      mealSum: 100,
-      service: 0,
+      dishSum: 0,
       discount: 0,
-      serviceValue: null,
+      serviceValue: "",
       serviceList: [
         { title: "Dine In", service: 10, icon: "" },
         { title: "To Go", service: 15, icon: "" },
@@ -115,13 +109,15 @@ export default {
     ...mapGetters({
       getDishesArray: "getDishesArray",
     }),
+    total() {
+      let summa = 0;
+      this.getDishesArray.forEach((item) => (summa += item.sum));
+      return Number(summa.toFixed(2));
+    },
   },
   methods: {
     removeDish(id) {
       this.$store.commit("removeDish", id);
-    },
-    total(par) {
-      console.log("rightside => ", par);
     },
   },
 };
@@ -200,7 +196,7 @@ export default {
   margin: 0;
 }
 
-.rightSide__meals {
+.right-side__meals {
   scroll-behavior: auto;
   overflow: auto;
   scrollbar-width: thin;

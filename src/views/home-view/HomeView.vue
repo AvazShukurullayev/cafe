@@ -178,14 +178,15 @@ export default {
         );
       }
     },
-    selectedCard(item, index) {
+    selectedCard(item) {
       let isThere = null;
       this.getDishesArray.forEach((element) => {
         if (element.id === item.id) isThere = true;
       });
 
       if (isThere) {
-        this.getDishesArray[index].counter++;
+        // this.getDishesArray[index].counter++;
+        this.$store.commit("incrementCount",item.id);
       } else {
         this.$store.commit("addDish", item);
       }
