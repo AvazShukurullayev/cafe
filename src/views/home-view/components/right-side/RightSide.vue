@@ -12,6 +12,7 @@
             name="service"
             v-model="serviceValue"
             :value="item.service"
+            required
           />
           <label :for="'check' + index" class="right-side__label">
             {{ item.title }}
@@ -42,13 +43,14 @@
               type="number"
               class="meal__left-counter"
               min="1"
-              :max="item.maxLimit"
+              :max="item.quantity"
               v-model="item.counter"
             />
             <!--? type="number" boganda e (eyler soni) ni togirlab qoyish kerak  -->
           </div>
           <div class="meal__left-bottom">
             <input
+              type="text"
               class="meal__left-comment"
               v-model="item.comment"
               placeholder="Please, write comments"
@@ -68,14 +70,17 @@
     </div>
     <div class="right-side__footer">
       <div>
-        <!-- ? v-for qilish kere -->
+        <div class="right-side__footer-card d-flex">
+          <p class="right-side__footer-discount">Service</p>
+          <p class="right-side__footer-price">% {{ serviceValue }}</p>
+        </div>
         <div class="right-side__footer-card d-flex">
           <p class="right-side__footer-discount">Discount</p>
           <p class="right-side__footer-price">$ {{ discount }}</p>
         </div>
         <div class="right-side__footer-card d-flex">
           <p class="right-side__footer-discount">Sub total</p>
-          <p class="right-side__footer-price">$ {{ total }}</p>
+          <p class="right-side__footer-price">$ {{ getTotal }}</p>
         </div>
       </div>
       <div class="mt-2">
@@ -95,9 +100,8 @@ export default {
   components: {},
   data() {
     return {
-      dishSum: 0,
       discount: 0,
-      serviceValue: "",
+      serviceValue: 0,
       serviceList: [
         { title: "Dine In", service: 10, icon: "" },
         { title: "To Go", service: 15, icon: "" },
@@ -108,17 +112,31 @@ export default {
   computed: {
     ...mapGetters({
       getDishesArray: "getDishesArray",
+      getTotal: "getTotal",
     }),
-    total() {
+    /*  totalSum() {
       let summa = 0;
       this.getDishesArray.forEach((item) => (summa += item.sum));
       return Number(summa.toFixed(2));
-    },
+    }, */
   },
   methods: {
     removeDish(id) {
       this.$store.commit("removeDish", id);
     },
+    total() {
+      let summa = 0;
+      this.getDishesArray.forEach((item) => (summa += item.sum));
+      let sum = Number(summa.toFixed(2));
+      let discount = this.discount;
+      let service = (sum * this.serviceValue) / 100;
+      let totalSum = Number((sum + service - discount).toFixed(2));
+      this.$store.commit("changeTotal", totalSum);
+    },
+  },
+  updated() {
+    this.total();
+    console.log("service value => ", this.serviceValue);
   },
 };
 </script>
@@ -195,14 +213,12 @@ export default {
   color: #fff;
   margin: 0;
 }
-
 .right-side__meals {
   scroll-behavior: auto;
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: rgb(232, 14, 14);
 }
-
 .meal {
   padding-top: 24px;
   display: flex;
@@ -244,7 +260,7 @@ export default {
   color: #abbbc2;
 }
 .meal__left-counter {
-  max-width: 52px;
+  max-width: 48px;
   width: 100%;
   min-height: 48px;
   display: flex;
@@ -303,7 +319,6 @@ export default {
   line-height: 140%;
   color: #ffffff;
 }
-
 .basket {
   width: 48px;
   height: 48px;
@@ -315,7 +330,6 @@ export default {
   background: transparent;
   cursor: pointer;
 }
-
 .payment__btn {
   width: 100%;
   background: #ea7c69;

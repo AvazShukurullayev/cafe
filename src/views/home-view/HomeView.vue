@@ -73,9 +73,11 @@
       </div>
     </div>
 
-    <RightSide />
+    <RightSide v-if="movement" @moveToPayment="moveToPayment" />
+    <Payment v-else @moveToRightSide="moveToRightSide" />
   </div>
 </template>
+
 <!-- ? selected card ni optimizatsiya qilish kerakmikan -->
 <script>
 import { mapGetters } from "vuex";
@@ -89,9 +91,6 @@ export default {
     return {
       inputWord: "",
       currentTime: "",
-      tempMenuList: null,
-      tempOptionalMenu: null,
-      tempFoodList: null,
       days: [
         "Monday",
         "Tuesday",
@@ -115,6 +114,10 @@ export default {
         "November",
         "December",
       ],
+      tempMenuList: null,
+      tempOptionalMenu: null,
+      tempFoodList: null,
+      movement: true,
     };
   },
   mounted() {
@@ -185,11 +188,18 @@ export default {
       });
 
       if (isThere) {
-        // this.getDishesArray[index].counter++;
-        this.$store.commit("incrementCount",item.id);
+        this.$store.commit("incrementCount", item.id);
       } else {
         this.$store.commit("addDish", item);
       }
+    },
+    moveToPayment() {
+      if (this.movement) this.movement = false;
+      else this.movement = true;
+    },
+    moveToRightSide() {
+      if (this.movement) this.movement = false;
+      else this.movement = true;
     },
   },
   computed: {

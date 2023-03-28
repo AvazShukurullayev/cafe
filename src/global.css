@@ -29,6 +29,22 @@
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #1f1d2b;
+  /* border-radius: 4px; */
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom,#8686863d,#ccc);
+  border-radius: 4px;
+  transition: background 0.3s linear;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom,#8686863d,#ccc,#8686863d);
+  /* border-radius: 4px; */
+}
 body {
   font-family: "Barlow-Regular", sans-serif;
   font-size: 16px;
@@ -44,7 +60,7 @@ li {
   list-style: none;
 }
 
-h1,
+h1
 h2,
 h3,
 h4,

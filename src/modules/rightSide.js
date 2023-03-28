@@ -1,12 +1,15 @@
 const state = {
   total: 0,
-  rate: 11000,
+  //   rate: 11000,
   dishesArray: [],
 };
 
 const getters = {
   getDishesArray: (state) => {
     return state.dishesArray;
+  },
+  getTotal: (state) => {
+    return state.total;
   },
 };
 
@@ -22,6 +25,9 @@ const mutations = {
   incrementCount(state, id) {
     let index = state.dishesArray.findIndex((ind) => ind.id == id);
     state.dishesArray[index].counter++;
+  },
+  changeTotal(state, payload) {
+    state.total = payload;
   },
 };
 

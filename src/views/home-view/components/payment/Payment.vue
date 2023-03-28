@@ -4,68 +4,98 @@
       <h2 class="payment__title">Payment</h2>
       <p class="payment__subtitle">3 payment methods available</p>
     </header>
-    <!--? v-model ishlami qoldi paymentSystem da  -->
+
     <div class="payment__method">
-      <h3 class="payment__method-title">Payment Method: {{ paymentSystem }}</h3>
+      <h3 class="payment__method-title">
+        Payment Method: {{ clientInfo.paymentMethod }}
+      </h3>
       <div class="payment__cards">
-        <!-- ? radio qilish kere value qaytaradi -->
         <template v-for="(item, index) in paymentList">
           <input
             type="radio"
             class="payment__input"
             name="payment"
-            v-model="paymentSystem"
+            v-model="clientInfo.paymentMethod"
             :id="'check' + index"
             :value="item.value"
+            required
           />
           <label :for="'check' + index" class="payment__label">
-            <img src="" alt="" />
+            <img :src="item.icon" :alt="item.label" />
             <p>{{ item.label }}</p>
           </label>
         </template>
       </div>
 
-      <div class="payment__part" v-for="(item, index) in registerList">
-        <label :for="'reg' + index" class="payment__name">{{
-          item.label
-        }}</label>
+      <div class="payment__part">
+        <label class="payment__name" for="clientName">Cardholder Name</label>
         <input
-          :type="item.type"
-          :id="'reg' + index"
+          type="text"
+          id="clientName"
           class="payment__part-input"
-          :placeholder="item.titleInput"
+          placeholder="Levi Ackerman"
+          v-model="clientInfo.clientName"
+        />
+      </div>
+      <div class="payment__part">
+        <label class="payment__name" for="clientCard">Card Number</label>
+        <input
+          type="password"
+          id="clientCard"
+          class="payment__part-input"
+          placeholder="2564 1421 0897 1244"
+          v-model="clientInfo.clientCard"
         />
       </div>
 
-      <div class="d-flex d-flex justify-content-between">
-        <div class="payment__part" v-for="(item, index) in dateList">
-          <label :for="'payment' + index" class="payment__name">
-            {{ item.title }}
-          </label>
+      <div class="d-flex d-flex justify-content-between mb-4">
+        <div class="payment__part">
+          <label class="payment__name" for="clientDate">Expiration Date</label>
           <input
-            :type="item.type"
-            :id="'payment' + index"
+            type="date"
             class="payment__part-input"
-            :placeholder="item.placeholder"
+            id="clientDate"
+            placeholder="02/2022"
+            v-model="clientInfo.clientDate"
+          />
+        </div>
+        <div class="payment__part">
+          <label class="payment__name" for="clientPassword">CVV</label>
+          <input
+            type="password"
+            class="payment__part-input"
+            id="clientPassword"
+            placeholder="*********"
+            v-model="clientInfo.clientPassword"
           />
         </div>
       </div>
-      <!--? <hr /> -->
-      <!--? line ni togirlash kerak -->
-      <div class="payment__line"></div>
-
-      <div class="d-flex justify-content-between">
+     
+      <div class="payment__order d-flex justify-content-between">
         <div class="payment__part">
-          <label for="pay__name" class="payment__name">Order type</label>
-          <select name="" id="" class="payment__part-select">
-            <option value="">dine in</option>
-            <option value="">to go</option>
-            <option value="">delivery</option>
+          <label class="payment__name" for="clientOrder">Order type</label>
+          <select
+            class="payment__part-select"
+            name="clientOrder"
+            id="clientOrder"
+            placeholder="Order type"
+            v-model="clientInfo.clientOrder"
+          >
+            <option disabled value="">Please select one</option>
+            <option value="dinein">Dine in</option>
+            <option value="togo">To go</option>
+            <option value="delivery">Delivery</option>
           </select>
         </div>
         <div class="payment__part">
-          <label for="pay__name" class="payment__name">Table №</label>
-          <input id="pay__name" class="payment__part-input" placeholder="140" />
+          <label class="payment__name" for="clientTable">Table №</label>
+          <input
+            type="number"
+            class="payment__part-input"
+            id="clientTable"
+            placeholder="140"
+            v-model="clientInfo.clientTable"
+          />
         </div>
       </div>
     </div>
@@ -74,7 +104,7 @@
       <button class="payment__cancel" @click="$emit('moveToRightSide')">
         Cancel
       </button>
-      <button class="payment__confirm" @click="$emit('confirmButton')">
+      <button class="payment__confirm" @click.prevent="confirmPayment">
         Confirm payment
       </button>
     </div>
@@ -82,33 +112,46 @@
 </template>
 
 <script>
+
 export default {
   name: "Payment",
   props: {},
   components: {},
   data() {
     return {
-      paymentSystem: "",
+      clientInfo: {
+        paymentMethod: "",
+        clientName: "",
+        clientCard: "",
+        clientDate: "",
+        clientPassword: "",
+        clientOrder: "",
+        clientTable: "",
+      },
       paymentList: [
-        { label: "Credit card", value: "creditcard", icon: "credit-card.svg" },
-        { label: "Paypal", value: "paypalcard", icon: "paypal-card.svg" },
-        { label: "Cash", value: "cash", icon: "cash.svg" },
-      ],
-      registerList: [
-        { type: "text", label: "Cardholder Name", titleInput: "Levi Ackerman" },
         {
-          type: "password",
-          label: "Card Number",
-          titleInput: "2564 1421 0897 1244",
+          label: "Credit card",
+          value: "creditcard",
+          icon: new URL("@/assets/images/svg/credit-card.svg", import.meta.url),
         },
-      ],
-      dateList: [
-        { title: "Expiration Date", type: "date", placeholder: "02/2022" },
-        { title: "CVV", type: "password", placeholder: "****" },
+        {
+          label: "Paypal",
+          value: "paypalcard",
+          icon: new URL("@/assets/images/svg/paypal-card.svg", import.meta.url),
+        },
+        {
+          label: "Cash",
+          value: "cash",
+          icon: new URL("@/assets/images/svg/cash.svg", import.meta.url),
+        },
       ],
     };
   },
-  methods: {},
+  methods: {
+    confirmPayment() {
+
+    }
+  },
 };
 </script>
 
@@ -118,8 +161,10 @@ export default {
   padding: 20px 23px 24px 24px;
   min-height: 100vh;
   background: #1f1d2b;
-  /* border-radius: 16px 16px 0px 16px; */
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   overflow: auto;
   position: fixed;
   right: 0;
@@ -143,8 +188,6 @@ export default {
   line-height: 140%;
   color: #abbbc2;
   margin-bottom: 24px;
-}
-.payment__method {
 }
 .payment__method-title {
   font-family: "Barlow-SemiBold";
@@ -181,13 +224,50 @@ export default {
   opacity: 0;
 }
 .payment__input[type="radio"]:checked + .payment__label {
-  background: red;
+  background: #ea7c69;
+  border-color: #fff;
 }
 .payment__btns {
   margin-top: 90px;
   display: flex;
   justify-content: space-between;
   gap: 8px;
+}
+.payment__part {
+  margin-top: 16px;
+}
+.payment__name {
+  font-family: "Barlow-Medium";
+  font-size: 14px;
+  line-height: 130%;
+  color: #fff;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.payment__part-input {
+  display: block;
+  width: 100%;
+  background: #2d303e;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 140%;
+  color: #e0e6e9;
+  padding: 14px;
+}
+.payment__order {
+  margin-top: 16px;
+  border-top: 1px solid #393c49;
+}
+.payment__part-select {
+  display: block;
+  padding: 14px;
+  background: #2d303e;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 140%;
+  color: #e0e6e9;
 }
 .payment__cancel,
 .payment__confirm {
@@ -217,41 +297,5 @@ export default {
 .payment__confirm:hover {
   color: #fafafa;
   background-color: #ea7c69;
-}
-.payment__part {
-  margin-top: 16px;
-}
-.payment__name {
-  font-family: "Barlow-Medium";
-  font-size: 14px;
-  line-height: 130%;
-  color: #fff;
-  margin-bottom: 8px;
-}
-.payment__part-input {
-  display: block;
-  width: 100%;
-  outline: none;
-  background: #2d303e;
-  border: 1px solid #393c49;
-  border-radius: 8px;
-  font-size: 14px;
-  line-height: 140%;
-  color: #e0e6e9;
-  padding: 14px;
-}
-.payment__line {
-  margin-top: 16px;
-  border-bottom: 1px solid #393c49;
-}
-.payment__part-select {
-  display: block;
-  padding: 14px;
-  background: #2d303e;
-  border: 1px solid #393c49;
-  border-radius: 8px;
-  font-size: 14px;
-  line-height: 140%;
-  color: #e0e6e9;
 }
 </style>

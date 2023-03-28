@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/home-view/HomeView.vue";
-import DiscountView from "@/views/DiscountView.vue";
-import DashboardView from "@/views/DashboardView.vue";
-import MessageView from "@/views/MessageView.vue";
-import NotificationView from "@/views/NotificationView.vue";
-import SettingsView from "@/views/SettingsView.vue";
-import ExitView from "@/views/ExitView.vue";
+import DiscountView from "@/views/discount-view/DiscountView.vue";
+import DashboardView from "@/views/dashboard-view/DashboardView.vue";
+import MessageView from "@/views/message-view/MessageView.vue";
+import NotificationView from "@/views/notification-view/NotificationView.vue";
+import SettingsView from "@/views/settings-view/SettingsView.vue";
+import ExitView from "@/views/exit-view/ExitView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
