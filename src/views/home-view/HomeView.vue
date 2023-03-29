@@ -2,46 +2,61 @@
   <div class="home">
     <!-- * Cheque started -->
 
-    <div v-if="true" class="main-content__dark cheque">
-      <h2 class="cheque__title">Welcome to our cafe Mr(Mrs).Smith</h2>
-      <h3>Food</h3>
-      <ul class="cheque__list">
-        <li
-          class="cheque__item d-flex align-items-center justify-content-between my-2"
-        >
-          <span>Birinchi taom......</span><span>..... $ 10</span>
-        </li>
-        <li
-          class="cheque__item d-flex align-items-center justify-content-between my-2"
-        >
-          <span>Ikkinchi taom......</span><span>..... $ 13</span>
-        </li>
-        <li
-          class="cheque__item d-flex align-items-center justify-content-between my-2"
-        >
-          <span>Uchinnchi taom......</span><span>...... $ 13</span>
-        </li>
-        <li
-          class="cheque__item d-flex align-items-center justify-content-between my-2"
-        >
-          <span>To'rtinchi taom......</span><span>..... $ 13</span>
-        </li>
-        <li
-          class="cheque__item d-flex align-items-center justify-content-between my-2"
-        >
-          <span>Beshinchi taom......</span><span>..... $ 13</span>
-        </li>
-      </ul>
-      <p class="food__table-number my-2">Table № 140</p>
-      <p class="food__order-type my-2">Order type: Dine in</p>
-      <p class="food__payment-method my-2">Payment method: Cash</p>
-      <p class="food__date my-2">Date: 3/29/2023, 12:07 PM</p>
+    <div v-if="cheque" class="main-content__dark d-flex justify-content-center">
+      <div class="cheque">
+        <h2 class="cheque__title">
+          Welcome to our cafe Mr(Mrs).{{ getClientName }}
+        </h2>
+        <h3>Food</h3>
+        <ul class="cheque__list">
+          <li
+            class="cheque__item d-flex justify-content-between my-2"
+            v-for="item in getDishesArray"
+          >
+            <span>{{ item.title }}......</span>
+            <b>......$ {{ item.sum }}</b>
+          </li>
+        </ul>
+        <p class="d-flex justify-content-between my-2">
+          <span>Table №......</span>
+          <b>......{{ getClientTable }}</b>
+        </p>
+        <p class="d-flex justify-content-between my-2">
+          <span>Order type:......</span>
+          <b>......{{ getClientOrder }}</b>
+        </p>
+        <p class="d-flex justify-content-between my-2">
+          <span>Payment method:......</span>
+          <b>......{{ getClientPaymentMethod }}</b>
+        </p>
+        <p class="d-flex justify-content-between my-2">
+          <span>Credit card:......</span>
+          <b>......{{ getClientCard }}</b>
+        </p>
+        <p class="d-flex justify-content-between my-2">
+          <span>Date:......</span>
+          <b
+            >...... {{ days[new Date().getUTCDay()] }},
+            {{ new Date().getDate() }}
+            {{ months[new Date().getMonth()] }}
+            {{ new Date().getFullYear() }}y {{ currentTime }}
+          </b>
+        </p>
 
-      <h4 class="cheque__total my-2">Total: $ 46</h4>
-      <div class="food__footer d-flex justify-content-center my-3">
-        <button class="btn btn-primary" @click.prevent="chequeHandler">
-          Thank You
-        </button>
+        <h4 class="cheque__total my-2">
+          Total: <b>$ {{ getTotal }}</b>
+        </h4>
+        <div class="cheque__footer d-flex justify-content-center my-3">
+          <button
+            class="cheque__cancel mx-2"
+            @click.prevent="cancelChequeHandler"
+          >
+            Cancel
+          </button>
+          <button class="cheque__thanks" @click.prevent="chequeHandler">
+            Thanks & Print
+          </button>
+        </div>
       </div>
     </div>
     <!-- * Cheque finished -->
@@ -122,7 +137,11 @@
     <!-- ? main-content finished -->
 
     <RightSide v-if="movement" @moveToPayment="moveToPayment" />
-    <Payment v-else @moveToRightSide="moveToRightSide" />
+    <Payment
+      v-else
+      @moveToRightSide="moveToRightSide"
+      @confirmPayment="confirmPayment"
+    />
   </div>
 </template>
 
@@ -243,6 +262,11 @@ export default {
       }
     },
     chequeHandler() {
+      this.$store.commit("setByDefaultRightSide");
+      this.$store.commit("setByDefaultPayment");
+      this.cheque = false;
+    },
+    cancelChequeHandler() {
       this.cheque = false;
     },
     moveToPayment() {
@@ -253,6 +277,9 @@ export default {
       if (this.movement) this.movement = false;
       else this.movement = true;
     },
+    confirmPayment() {
+      this.cheque = true;
+    },
   },
   computed: {
     /*  ...mapGetters(["getMenuList", "getOptionalMenu", "getFoodList"]), */
@@ -261,6 +288,14 @@ export default {
       getOptionalMenu: "getOptionalMenu",
       getFoodList: "getFoodList",
       getDishesArray: "getDishesArray",
+      getClientPaymentMethod: "getClientPaymentMethod",
+      getClientName: "getClientName",
+      getClientCard: "getClientCard",
+      getClientDate: "getClientDate",
+      getClientPassword: "getClientPassword",
+      getClientOrder: "getClientOrder",
+      getClientTable: "getClientTable",
+      getTotal: "getTotal",
     }),
   },
 };
@@ -276,12 +311,42 @@ export default {
   border: 2px solid #fafafa;
   padding: 1rem;
   border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
 }
 .cheque__title {
   text-align: center;
   margin-bottom: 1rem;
 }
-
+.cheque__cancel,
+.cheque__thanks {
+  display: inline-block;
+  max-width: 175px;
+  width: 100%;
+  border: 1px solid #ea7c69;
+  border-radius: 8px;
+  padding: 14px 0;
+  text-align: center;
+  font-family: "Barlow-SemiBold";
+  font-size: 14px;
+  line-height: 140%;
+  color: #ea7c69;
+  background-color: transparent;
+  transition: all 0.2s linear;
+}
+.cheque__thanks {
+  background: #ea7c69;
+  color: #fafafa;
+  box-shadow: 0px 8px 24px rgba(234, 124, 105, 0.4);
+}
+.cheque__cancel:hover {
+  color: #ea7c69;
+  background-color: transparent;
+}
+.cheque__thanks:hover {
+  color: #fafafa;
+  background-color: #ea7c69;
+}
 .cheque__total {
   text-align: right;
 }

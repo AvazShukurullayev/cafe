@@ -29,6 +29,10 @@ const mutations = {
   changeTotal(state, payload) {
     state.total = payload;
   },
+  setByDefaultRightSide(state) {
+    state.total = 0;
+    state.dishesArray = [];
+  },
 };
 
 const actions = {};

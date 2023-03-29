@@ -7,7 +7,7 @@
 
     <div class="payment__method">
       <h3 class="payment__method-title">
-        Payment Method: {{ clientInfo.paymentMethod }}
+        Payment Method: {{ clientInfo.clientPaymentMethod }}
       </h3>
       <div class="payment__cards">
         <template v-for="(item, index) in paymentList">
@@ -15,7 +15,7 @@
             type="radio"
             class="payment__input"
             name="payment"
-            v-model="clientInfo.paymentMethod"
+            v-model="clientInfo.clientPaymentMethod"
             :id="'check' + index"
             :value="item.value"
             required
@@ -82,8 +82,8 @@
             v-model="clientInfo.clientOrder"
           >
             <option disabled value="">Please select one</option>
-            <option value="dinein">Dine in</option>
-            <option value="togo">To go</option>
+            <option value="dine-in">Dine in</option>
+            <option value="to-go">To go</option>
             <option value="delivery">Delivery</option>
           </select>
         </div>
@@ -104,7 +104,7 @@
       <button class="payment__cancel" @click="$emit('moveToRightSide')">
         Cancel
       </button>
-      <button class="payment__confirm" @click.prevent="confirmPayment">
+      <button class="payment__confirm" @click="paymentConfirm">
         Confirm payment
       </button>
     </div>
@@ -120,7 +120,7 @@ export default {
     return {
       cheque: false,
       clientInfo: {
-        paymentMethod: "",
+        clientPaymentMethod: "",
         clientName: "",
         clientCard: "",
         clientDate: "",
@@ -148,13 +148,9 @@ export default {
     };
   },
   methods: {
-    confirmPayment() {
-      if (this.cheque) this.cheque = false;
-      else this.cheque = true;
-    },
-    closeCheque() {
-      if (this.cheque) this.cheque = false;
-      else this.cheque = true;
+    paymentConfirm() {
+      this.$store.commit("setClientInfo", this.clientInfo);
+      this.$emit("confirmPayment");
     },
   },
 };
