@@ -1,67 +1,13 @@
 <template>
   <div class="home">
-    <!-- * Cheque started -->
+    <Cheque
+      v-if="cheque"
+      class="main-content__dark"
+      @cancelChequeHandler="cancelChequeHandler"
+      @chequeHandler="chequeHandler"
+      :getDishesArray="getDishesArray"
+    />
 
-    <div v-if="cheque" class="main-content__dark d-flex justify-content-center">
-      <div class="cheque">
-        <h2 class="cheque__title">
-          Welcome to our cafe Mr(Mrs).{{ getClientName }}
-        </h2>
-        <h3>Food</h3>
-        <ul class="cheque__list">
-          <li
-            class="cheque__item d-flex justify-content-between my-2"
-            v-for="item in getDishesArray"
-          >
-            <span>{{ item.title }}......</span>
-            <b>......$ {{ item.sum }}</b>
-          </li>
-        </ul>
-        <p class="d-flex justify-content-between my-2">
-          <span>Table №......</span>
-          <b>......{{ getClientTable }}</b>
-        </p>
-        <p class="d-flex justify-content-between my-2">
-          <span>Order type:......</span>
-          <b>......{{ getClientOrder }}</b>
-        </p>
-        <p class="d-flex justify-content-between my-2">
-          <span>Payment method:......</span>
-          <b>......{{ getClientPaymentMethod }}</b>
-        </p>
-        <p class="d-flex justify-content-between my-2">
-          <span>Credit card:......</span>
-          <b>......{{ getClientCard }}</b>
-        </p>
-        <p class="d-flex justify-content-between my-2">
-          <span>Date:......</span>
-          <b
-            >...... {{ days[new Date().getUTCDay()] }},
-            {{ new Date().getDate() }}
-            {{ months[new Date().getMonth()] }}
-            {{ new Date().getFullYear() }}y {{ currentTime }}
-          </b>
-        </p>
-
-        <h4 class="cheque__total my-2">
-          Total: <b>$ {{ getTotal }}</b>
-        </h4>
-        <div class="cheque__footer d-flex justify-content-center my-3">
-          <button
-            class="cheque__cancel mx-2"
-            @click.prevent="cancelChequeHandler"
-          >
-            Cancel
-          </button>
-          <button class="cheque__thanks" @click.prevent="chequeHandler">
-            Thanks & Print
-          </button>
-        </div>
-      </div>
-    </div>
-    <!-- * Cheque finished -->
-
-    <!-- ? main-content started -->
     <div v-else class="main-content">
       <header class="main-content__header">
         <div>
@@ -102,41 +48,20 @@
         </select>
       </div>
 
-      <div v-if="tempFoodList" class="main-content__cards">
-        <template v-for="(item, index) in tempFoodList">
-          <div
-            class="main-content__card"
-            v-if="item.isShown"
-            :key="item.id"
-            @click="selectedCard(item, index)"
-          >
-            <div class="main-content__card-image">
-              <img
-                class="main-content__card-img"
-                :src="item.img"
-                :alt="item.title"
-              />
-            </div>
-
-            <h3 class="main-content__card-title">
-              {{ item.title }}
-            </h3>
-            <p class="main-content__card-price">$ {{ item.price }}</p>
-            <p class="main-content__card-desc">
-              {{ item.quantity }} {{ item.desc }}
-            </p>
-          </div>
-        </template>
-      </div>
-      <div v-else class="main-content__loading">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
+      <FoodCard
+        v-if="tempFoodList"
+        :tempFoodList="tempFoodList"
+        @selectedCard="selectedCard"
+      />
+      <Loader v-else />
     </div>
-    <!-- ? main-content finished -->
 
-    <RightSide v-if="movement" @moveToPayment="moveToPayment" />
+    <RightSide
+      v-if="movement"
+      @moveToPayment="moveToPayment"
+      :getDishesArray="getDishesArray"
+      :getTotal="getTotal"
+    />
     <Payment
       v-else
       @moveToRightSide="moveToRightSide"
@@ -145,15 +70,17 @@
   </div>
 </template>
 
-<!-- ? selected card ni optimizatsiya qilish kerakmikan -->
 <script>
 import { mapGetters } from "vuex";
+import Cheque from "./components/cheque/Cheque.vue";
+import FoodCard from "./components/food-card/FoodCard.vue";
+import Loader from "./components/loader/Loader.vue";
 import RightSide from "@/views/home-view/components/right-side/RightSide.vue";
 import Payment from "@/views/home-view/components/payment/Payment.vue";
 
 export default {
   name: "HomeView",
-  components: { RightSide, Payment },
+  components: { Cheque, FoodCard, Loader, RightSide, Payment },
   data() {
     return {
       cheque: false,
@@ -288,13 +215,6 @@ export default {
       getOptionalMenu: "getOptionalMenu",
       getFoodList: "getFoodList",
       getDishesArray: "getDishesArray",
-      getClientPaymentMethod: "getClientPaymentMethod",
-      getClientName: "getClientName",
-      getClientCard: "getClientCard",
-      getClientDate: "getClientDate",
-      getClientPassword: "getClientPassword",
-      getClientOrder: "getClientOrder",
-      getClientTable: "getClientTable",
       getTotal: "getTotal",
     }),
   },
@@ -305,52 +225,6 @@ export default {
 .home {
   padding: 24px 433px 24px 110px;
 }
-/* cheque uchun */
-.cheque {
-  color: #fff;
-  border: 2px solid #fafafa;
-  padding: 1rem;
-  border-radius: 8px;
-  max-width: 600px;
-  width: 100%;
-}
-.cheque__title {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-.cheque__cancel,
-.cheque__thanks {
-  display: inline-block;
-  max-width: 175px;
-  width: 100%;
-  border: 1px solid #ea7c69;
-  border-radius: 8px;
-  padding: 14px 0;
-  text-align: center;
-  font-family: "Barlow-SemiBold";
-  font-size: 14px;
-  line-height: 140%;
-  color: #ea7c69;
-  background-color: transparent;
-  transition: all 0.2s linear;
-}
-.cheque__thanks {
-  background: #ea7c69;
-  color: #fafafa;
-  box-shadow: 0px 8px 24px rgba(234, 124, 105, 0.4);
-}
-.cheque__cancel:hover {
-  color: #ea7c69;
-  background-color: transparent;
-}
-.cheque__thanks:hover {
-  color: #fafafa;
-  background-color: #ea7c69;
-}
-.cheque__total {
-  text-align: right;
-}
-/* main-content uchun */
 .main-content {
   min-height: 100vh;
 }
@@ -426,74 +300,4 @@ export default {
   color: #fff;
   padding: 15px 14px;
 }
-
-.main-content__cards {
-  margin-top: 58px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 28px;
-}
-.main-content__card {
-  max-width: 192px;
-  /* max-width: calc(100% / 3 - 28px); */
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  background: #1f1d2b;
-  border-radius: 16px;
-  text-align: center;
-  padding: 24px;
-  /* margin-top: 2.5rem; */
-  cursor: pointer;
-}
-.main-content__card-image {
-  margin: -36px auto 0;
-  max-width: 150px;
-  min-width: 75px;
-}
-.main-content__card-img {
-  object-fit: cover;
-  object-position: center;
-  width: 100%;
-  border-radius: 50%;
-}
-.main-content__card-title {
-  margin-top: 14px;
-  font-family: "Barlow-Medium";
-  font-size: 14px;
-  line-height: 130%;
-  text-align: center;
-  color: #fff;
-}
-.main-content__card-price {
-  margin-top: 8px;
-  font-size: 14px;
-  line-height: 140%;
-  color: #fff;
-}
-.main-content__card-desc {
-  margin-top: 4px;
-  font-size: 14px;
-  line-height: 140%;
-  color: #abbbc2;
-  /* opacity: 0.2; */
-}
-
-.main-content__loading {
-  color: #fff;
-  text-align: center;
-}
 </style>
-
-<!-- 
-  if (this.getDishesArray.length == 0) {
-        this.$store.commit("addDish", item);
-      } else if (isThere) {
-        this.getDishesArray[index].counter++;
-      } else {
-        this.$store.commit("addDish", item);
-      }
- -->

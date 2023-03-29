@@ -3,7 +3,6 @@
     <div class="right-side__header">
       <h2 class="right-side__title">Orders #41023</h2>
       <div class="right-side__services">
-        <!--? radio type value beradi  -->
         <template v-for="(item, index) in serviceList">
           <input
             type="radio"
@@ -29,7 +28,7 @@
     </div>
 
     <div class="right-side__meals">
-      <div class="meal" v-for="(item, index) in getDishesArray">
+      <div class="meal" v-for="item in getDishesArray">
         <div class="meal__left">
           <div class="meal__left-top d-flex">
             <div class="d-flex">
@@ -46,7 +45,6 @@
               :max="item.quantity"
               v-model="item.counter"
             />
-            <!--? type="number" boganda e (eyler soni) ni togirlab qoyish kerak  -->
           </div>
           <div class="meal__left-bottom">
             <input
@@ -68,18 +66,19 @@
         </div>
       </div>
     </div>
+
     <div class="right-side__footer">
       <div>
         <div class="right-side__footer-card d-flex">
-          <p class="right-side__footer-discount">Service</p>
+          <p class="right-side__footer-desc">Service</p>
           <p class="right-side__footer-price">% {{ serviceValue }}</p>
         </div>
         <div class="right-side__footer-card d-flex">
-          <p class="right-side__footer-discount">Discount</p>
+          <p class="right-side__footer-desc">Discount</p>
           <p class="right-side__footer-price">$ {{ discount }}</p>
         </div>
         <div class="right-side__footer-card d-flex">
-          <p class="right-side__footer-discount">Sub total</p>
+          <p class="right-side__footer-desc">Sub total</p>
           <p class="right-side__footer-price">$ {{ getTotal }}</p>
         </div>
       </div>
@@ -93,10 +92,18 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 export default {
   name: "RightSide",
-  props: {},
+  props: {
+    getDishesArray: {
+      type: Array,
+      required: true,
+    },
+    getTotal: {
+      type: Number,
+      required: true,
+    },
+  },
   components: {},
   data() {
     return {
@@ -108,17 +115,6 @@ export default {
         { title: "Delivery", service: 20, icon: "" },
       ],
     };
-  },
-  computed: {
-    ...mapGetters({
-      getDishesArray: "getDishesArray",
-      getTotal: "getTotal",
-    }),
-    /*  totalSum() {
-      let summa = 0;
-      this.getDishesArray.forEach((item) => (summa += item.sum));
-      return Number(summa.toFixed(2));
-    }, */
   },
   methods: {
     removeDish(id) {
@@ -136,7 +132,6 @@ export default {
   },
   updated() {
     this.total();
-    console.log("service value => ", this.serviceValue);
   },
 };
 </script>
@@ -298,7 +293,6 @@ export default {
   color: #fff;
   padding-top: 14px;
 }
-
 .right-side__footer {
   border-top: 1px solid #393c49;
   padding-top: 24px;
@@ -308,7 +302,7 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
-.right-side__footer-discount {
+.right-side__footer-desc {
   font-size: 14px;
   line-height: 140%;
   color: #abbbc2;
