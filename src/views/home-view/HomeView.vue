@@ -1,6 +1,53 @@
 <template>
   <div class="home">
-    <div class="main-content">
+    <!-- * Cheque started -->
+
+    <div v-if="true" class="main-content__dark cheque">
+      <h2 class="cheque__title">Welcome to our cafe Mr(Mrs).Smith</h2>
+      <h3>Food</h3>
+      <ul class="cheque__list">
+        <li
+          class="cheque__item d-flex align-items-center justify-content-between my-2"
+        >
+          <span>Birinchi taom......</span><span>..... $ 10</span>
+        </li>
+        <li
+          class="cheque__item d-flex align-items-center justify-content-between my-2"
+        >
+          <span>Ikkinchi taom......</span><span>..... $ 13</span>
+        </li>
+        <li
+          class="cheque__item d-flex align-items-center justify-content-between my-2"
+        >
+          <span>Uchinnchi taom......</span><span>...... $ 13</span>
+        </li>
+        <li
+          class="cheque__item d-flex align-items-center justify-content-between my-2"
+        >
+          <span>To'rtinchi taom......</span><span>..... $ 13</span>
+        </li>
+        <li
+          class="cheque__item d-flex align-items-center justify-content-between my-2"
+        >
+          <span>Beshinchi taom......</span><span>..... $ 13</span>
+        </li>
+      </ul>
+      <p class="food__table-number my-2">Table № 140</p>
+      <p class="food__order-type my-2">Order type: Dine in</p>
+      <p class="food__payment-method my-2">Payment method: Cash</p>
+      <p class="food__date my-2">Date: 3/29/2023, 12:07 PM</p>
+
+      <h4 class="cheque__total my-2">Total: $ 46</h4>
+      <div class="food__footer d-flex justify-content-center my-3">
+        <button class="btn btn-primary" @click.prevent="chequeHandler">
+          Thank You
+        </button>
+      </div>
+    </div>
+    <!-- * Cheque finished -->
+
+    <!-- ? main-content started -->
+    <div v-else class="main-content">
       <header class="main-content__header">
         <div>
           <h2 class="main-content__title">Jaegar Resto</h2>
@@ -72,6 +119,7 @@
         </div>
       </div>
     </div>
+    <!-- ? main-content finished -->
 
     <RightSide v-if="movement" @moveToPayment="moveToPayment" />
     <Payment v-else @moveToRightSide="moveToRightSide" />
@@ -89,6 +137,7 @@ export default {
   components: { RightSide, Payment },
   data() {
     return {
+      cheque: false,
       inputWord: "",
       currentTime: "",
       days: [
@@ -193,6 +242,9 @@ export default {
         this.$store.commit("addDish", item);
       }
     },
+    chequeHandler() {
+      this.cheque = false;
+    },
     moveToPayment() {
       if (this.movement) this.movement = false;
       else this.movement = true;
@@ -218,6 +270,22 @@ export default {
 .home {
   padding: 24px 433px 24px 110px;
 }
+/* cheque uchun */
+.cheque {
+  color: #fff;
+  border: 2px solid #fafafa;
+  padding: 1rem;
+  border-radius: 8px;
+}
+.cheque__title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.cheque__total {
+  text-align: right;
+}
+/* main-content uchun */
 .main-content {
   min-height: 100vh;
 }
@@ -235,7 +303,6 @@ export default {
   margin-bottom: 4px;
 }
 .main-content__date {
-  /* font-family: "Barlow"; */
   font-size: 16px;
   line-height: 140%;
   color: #e0e6e9;
@@ -298,12 +365,13 @@ export default {
 .main-content__cards {
   margin-top: 58px;
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: 28px;
 }
 .main-content__card {
-  /* max-width: 192px; */
-  max-width: calc(100% / 3 - 28px);
+  max-width: 192px;
+  /* max-width: calc(100% / 3 - 28px); */
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -313,6 +381,7 @@ export default {
   border-radius: 16px;
   text-align: center;
   padding: 24px;
+  /* margin-top: 2.5rem; */
   cursor: pointer;
 }
 .main-content__card-image {

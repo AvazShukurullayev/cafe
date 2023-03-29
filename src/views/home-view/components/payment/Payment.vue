@@ -70,7 +70,7 @@
           />
         </div>
       </div>
-     
+
       <div class="payment__order d-flex justify-content-between">
         <div class="payment__part">
           <label class="payment__name" for="clientOrder">Order type</label>
@@ -112,13 +112,13 @@
 </template>
 
 <script>
-
 export default {
   name: "Payment",
   props: {},
   components: {},
   data() {
     return {
+      cheque: false,
       clientInfo: {
         paymentMethod: "",
         clientName: "",
@@ -149,8 +149,13 @@ export default {
   },
   methods: {
     confirmPayment() {
-
-    }
+      if (this.cheque) this.cheque = false;
+      else this.cheque = true;
+    },
+    closeCheque() {
+      if (this.cheque) this.cheque = false;
+      else this.cheque = true;
+    },
   },
 };
 </script>
